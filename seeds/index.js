@@ -1,3 +1,5 @@
+// Run This File only To Seed The Database
+
 const mongoose = require('mongoose');
 const Campground = require('../models/campground');
 const cities = require('./cities');
@@ -18,8 +20,10 @@ function sample(array) {
     return array[Math.floor(Math.random() * array.length)]
 };
 
+//To Seed Our Database
+
 const seedDB = async() => {
-    await Campground.deleteMany({});
+    await Campground.deleteMany({}); //To delete all existing data in db
     for (let i = 0; i < 50; i++) {
         const random1000 = Math.floor(Math.random() * 1000);
         const price = Math.floor(Math.random() * 20) + 10;
