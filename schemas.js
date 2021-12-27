@@ -1,3 +1,5 @@
+//JOI validations
+
 const Joi = require('joi');
 
 //For Validating Campground Schema
