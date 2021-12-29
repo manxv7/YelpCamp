@@ -1,4 +1,4 @@
-//Wrapper Function to implemet try catch on all async req handlers
+//Wrapper Function to implement try catch on all async req handlers
 
 module.exports = func => {
     return (req, res, next) => {

@@ -7,10 +7,15 @@ const methodOverride = require('method-override');
 const ExpressError = require('./utils/ExpressError');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport')
+const LocalStrategy = require('passport-local');
+const User = require('./models/user');
 
 //Express Routers
-const campgrounds = require('./routes/campgrounds');
-const reviews = require('./routes/reviews');
+const campgroundRoutes = require('./routes/campgrounds');
+const reviewRoutes = require('./routes/reviews');
+const userRoutes = require('./routes/users');
+
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -41,9 +46,18 @@ const sessionConfig = {
 app.use(session(sessionConfig));
 app.use(flash());
 
+
+//Configuring Passport
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate())); //authenticate is a static method adde by passport-local-mongoose
+passport.serializeUser(User.serializeUser()); //How to Store in Session
+passport.deserializeUser(User.deserializeUser()); //How to remove from session
+
 //To Save Flash Message
 //properties in res.locals can be accessed by our ejs templates
 app.use((req, res, next) => {
+    res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
     res.locals.error = req.flash('error');
     next();
@@ -58,10 +72,13 @@ app.get('/', (req, res) => {
 });
 
 //Campground Routes
-app.use('/campgrounds', campgrounds);
+app.use('/campgrounds', campgroundRoutes);
 
 //Review Routes
-app.use('/campgrounds/:id/reviews', reviews);
+app.use('/campgrounds/:id/reviews', reviewRoutes);
+
+//User Routes
+app.use('/', userRoutes);
 
 //Route Not Found
 app.all('*', (req, res, next) => {
