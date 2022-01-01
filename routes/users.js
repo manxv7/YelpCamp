@@ -6,7 +6,7 @@ const passport = require('passport');
 
 //To SignUp/register
 router.get('/register', (req, res) => {
-    res.render('users/register')
+    res.render('users/register');
 })
 
 router.post('/register', catchAsync(async(req, res) => {
